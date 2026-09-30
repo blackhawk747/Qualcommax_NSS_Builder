@@ -1,45 +1,17 @@
 #
-# OpenWrt Configuration for JDCloud RE-CS-07 (IPQ6010, 2 GB RAM)
-# Wired-only NSS-accelerated build — Wi-Fi completely disabled
+# OpenWrt Configuration for JDCloud RE-CS-07 (IPQ6010 / IPQ60xx)
 #
 
-# Target Device
-CONFIG_TARGET_qualcommax_ipq60xx_DEVICE_jdcloud_re-cs-07=y
-
-# Memory Profile (Configured for 2 GB RAM)
-CONFIG_ATH11K_MEM_PROFILE_1G=y
-CONFIG_NSS_MEM_PROFILE_HIGH=y
-
-# Enable USB 3.0 Support (Required for RE-CS-07's USB port)
-CONFIG_PACKAGE_kmod-usb-core=y
-CONFIG_PACKAGE_kmod-usb3=y
-CONFIG_PACKAGE_kmod-usb-dwc3=y
-CONFIG_PACKAGE_kmod-usb-dwc3-qcom=y
-CONFIG_PACKAGE_kmod-usb-xhci-hcd=y
-CONFIG_PACKAGE_kmod-usb-storage=y
-CONFIG_PACKAGE_kmod-usb-storage-uas=y
+# Target Device Selection
+CONFIG_TARGET_qualcommax=y
+CONFIG_TARGET_qualcommax_ipq60xx=y
+CONFIG_TARGET_DEVICE_qualcommax_ipq60xx_DEVICE_jdcloud_re-cs-07=y
 
 # Replace standard dnsmasq with dnsmasq-full
 CONFIG_PACKAGE_dnsmasq=n
 CONFIG_PACKAGE_dnsmasq-full=y
 
-# Wi-Fi completely disabled (No drivers, no firmware, no hostapd)
-CONFIG_PACKAGE_kmod-ath11k=n
-CONFIG_PACKAGE_kmod-ath11k-ahb=n
-CONFIG_PACKAGE_kmod-ath11k-pci=n
-CONFIG_PACKAGE_ath11k-firmware-ipq6018=n
-CONFIG_PACKAGE_ath11k-firmware-qcn9074=n
-CONFIG_PACKAGE_wpad-openssl=n
-CONFIG_PACKAGE_wpad-basic-mbedtls=n
-CONFIG_PACKAGE_hostapd-common=n
-
-# Disable Wi-Fi NSS offload flags (prevents dependency conflicts)
-CONFIG_ATH11K_NSS_SUPPORT=n
-CONFIG_ATH11K_NSS_MESH_SUPPORT=n
-CONFIG_PACKAGE_MAC80211_NSS_SUPPORT=n
-
 # Extra Storage & Networking Features
 CONFIG_PACKAGE_luci-app-samba4=y
 CONFIG_PACKAGE_luci-app-ttyd=y
-CONFIG_PACKAGE_luci-app-zerotier=y
 CONFIG_PACKAGE_kmod-wireguard=y
