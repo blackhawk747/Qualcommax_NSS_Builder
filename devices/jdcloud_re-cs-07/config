@@ -1,36 +1,29 @@
 #
-# OpenWrt Configuration for JDCloud RE-CS-07
-# Wired-only NSS-accelerated build – Wi-Fi completely disabled
-# Last updated: February 2026
+# OpenWrt Configuration for JDCloud RE-CS-07 (IPQ6010, 2 GB RAM)
+# Wired-only NSS-accelerated build — Wi-Fi completely disabled
 #
 
-## Target Platform
-CONFIG_TARGET_qualcommax=y
-CONFIG_TARGET_qualcommax_ipq60xx=y
+# Target Device
 CONFIG_TARGET_qualcommax_ipq60xx_DEVICE_jdcloud_re-cs-07=y
-CONFIG_TARGET_DEVICE_qualcommax_ipq60xx_DEVICE_jdcloud_re-cs-07=y
 
-## Essential NSS Configuration
-CONFIG_ATH11K_NSS_SUPPORT=y
-CONFIG_ATH11K_NSS_MESH_SUPPORT=y
-CONFIG_PACKAGE_MAC80211_NSS_SUPPORT=y
-CONFIG_PACKAGE_kmod-qca-nss-drv=y
-CONFIG_PACKAGE_kmod-qca-nss-drv-bridge-mgr=y
-CONFIG_PACKAGE_kmod-qca-nss-ecm=y
+# Memory Profile (Configured for 2 GB RAM)
+CONFIG_ATH11K_MEM_PROFILE_1G=y
+CONFIG_NSS_MEM_PROFILE_HIGH=y
 
-## Additional NSS Configuration
-CONFIG_PACKAGE_kmod-qca-nss-drv-pppoe=y
-CONFIG_PACKAGE_kmod-qca-nss-drv-vlan-mgr=y
-CONFIG_PACKAGE_kmod-qca-mcs=y
+# Enable USB 3.0 Support (Required for RE-CS-07's USB port)
+CONFIG_PACKAGE_kmod-usb-core=y
+CONFIG_PACKAGE_kmod-usb3=y
+CONFIG_PACKAGE_kmod-usb-dwc3=y
+CONFIG_PACKAGE_kmod-usb-dwc3-qcom=y
+CONFIG_PACKAGE_kmod-usb-xhci-hcd=y
+CONFIG_PACKAGE_kmod-usb-storage=y
+CONFIG_PACKAGE_kmod-usb-storage-uas=y
 
-## Disable Ath10k (not needed)
-CONFIG_ATH10K-CT_LEDS=n
-CONFIG_PACKAGE_ath10k-board-qca9887=n
-CONFIG_PACKAGE_ath10k-firmware-qca9887=n
-CONFIG_PACKAGE_ath10k-firmware-qca9887-ct=n
-CONFIG_PACKAGE_kmod-ath10k-ct-smallbuffers=n
+# Replace standard dnsmasq with dnsmasq-full
+CONFIG_PACKAGE_dnsmasq=n
+CONFIG_PACKAGE_dnsmasq-full=y
 
-## Wi-Fi completely disabled (no driver, no firmware, no wpad/hostapd)
+# Wi-Fi completely disabled (No drivers, no firmware, no hostapd)
 CONFIG_PACKAGE_kmod-ath11k=n
 CONFIG_PACKAGE_kmod-ath11k-ahb=n
 CONFIG_PACKAGE_kmod-ath11k-pci=n
@@ -40,152 +33,13 @@ CONFIG_PACKAGE_wpad-openssl=n
 CONFIG_PACKAGE_wpad-basic-mbedtls=n
 CONFIG_PACKAGE_hostapd-common=n
 
-## Compiler and Toolchain Optimization
-CONFIG_BINUTILS_USE_VERSION_2_45=y
-CONFIG_DEVEL=y
-CONFIG_GCC_USE_GRAPHITE=y
-CONFIG_GCC_USE_VERSION_15=y
-CONFIG_TARGET_OPTIMIZATION="-O2 -pipe -mcpu=cortex-a53+crc+crypto"
-CONFIG_TARGET_OPTIONS=y
-CONFIG_TOOLCHAINOPTS=y
-CONFIG_USE_GC_SECTIONS=y
-CONFIG_USE_LTO=y
-# CONFIG_USE_MKLIBS is not set
-CONFIG_USE_MOLD=y
-CONFIG_ZLIB_OPTIMIZE_SPEED=y
-CONFIG_ZSTD_OPTIMIZE_O3=y
-CONFIG_CCACHE=y
+# Disable Wi-Fi NSS offload flags (prevents dependency conflicts)
+CONFIG_ATH11K_NSS_SUPPORT=n
+CONFIG_ATH11K_NSS_MESH_SUPPORT=n
+CONFIG_PACKAGE_MAC80211_NSS_SUPPORT=n
 
-## Kernel Build Options
-CONFIG_BUILD_PATENTED=y
-CONFIG_EXPERIMENTAL=y
-
-## Hardening
-CONFIG_PKG_CHECK_FORMAT_SECURITY=y
-CONFIG_PKG_ASLR_PIE_ALL=y
-CONFIG_PKG_CC_STACKPROTECTOR_ALL=y
-CONFIG_KERNEL_CC_STACKPROTECTOR_STRONG=y
-CONFIG_PKG_FORTIFY_SOURCE_3=y
-CONFIG_PKG_RELRO_FULL=y
-CONFIG_USE_SECCOMP=y
-
-## SSH Server (Dropbear - lightweight, default)
-CONFIG_PACKAGE_dropbear=y
-CONFIG_PACKAGE_openssh-server=n
-CONFIG_PACKAGE_openssh-sftp-server=n
-CONFIG_PACKAGE_openssh-moduli=n
-
-## SSL and Cryptography (OpenSSL everywhere)
-CONFIG_LUA_ECO_MBEDTLS=n
-CONFIG_LUA_ECO_OPENSSL=y
-CONFIG_OPENSSL_OPTIMIZE_SPEED=y
-CONFIG_PACKAGE_apk-mbedtls=n
-CONFIG_PACKAGE_apk-openssl=y
-CONFIG_PACKAGE_libopenssl=y
-CONFIG_PACKAGE_libustream-mbedtls=n
-CONFIG_PACKAGE_libustream-openssl=y
-CONFIG_PACKAGE_luci-ssl-openssl=y
-CONFIG_PACKAGE_luci-app-bcp38=y
-
-## Core Packages
-CONFIG_PACKAGE_curl=y
-CONFIG_PACKAGE_htop=y
-CONFIG_HTOP_LMSENSORS=n
-CONFIG_PACKAGE_iperf3=y
-CONFIG_PACKAGE_kmod-tcp-bbr=y
-CONFIG_LIBCURL_MBEDTLS=n
-CONFIG_LIBCURL_OPENSSL=y
-CONFIG_PACKAGE_luci=y
-CONFIG_PACKAGE_luci-app-firewall=y
-CONFIG_PACKAGE_luci-mod-status-nss=y
-CONFIG_PACKAGE_luci-app-sqm=y
-CONFIG_PACKAGE_sqm-scripts-nss=y
-
-## LuCI Web Server and RPC Daemon (required for full LuCI functionality)
-CONFIG_PACKAGE_uhttpd=y
-CONFIG_PACKAGE_uhttpd-mod-ubus=y
-CONFIG_PACKAGE_uhttpd-mod-tls=y          # Enables HTTPS (recommended with your OpenSSL setup)
-CONFIG_PACKAGE_rpcd=y
-CONFIG_PACKAGE_rpcd-mod-file=y           # File upload/download (firmware, backup, etc.)
-CONFIG_PACKAGE_rpcd-mod-iwinfo=n         # Explicitly disabled (no Wi-Fi)
-
-## Safe Additional LuCI Apps & Themes (official/community compatible)
-CONFIG_PACKAGE_luci-app-samba4=y                # File sharing over USB drive
-CONFIG_PACKAGE_luci-app-ttyd=y                   # Web-based terminal
-CONFIG_PACKAGE_luci-app-zerotier=y               # Zerotier VPN
-CONFIG_PACKAGE_luci-app-autoreboot=y             # Scheduled reboots
-CONFIG_PACKAGE_luci-theme-argon=y                # Modern theme
-
-## Clean up unwanted defaults
-CONFIG_PACKAGE_luci-app-ddns=n
-CONFIG_PACKAGE_luci-app-vlmcsd=n
-CONFIG_PACKAGE_luci-app-xlnetacc=n
-CONFIG_PACKAGE_luci-app-adbyby-plus=n
-
-## Kernel Modules – Wired / USB 3.0 / Proxy acceleration
-CONFIG_PACKAGE_kmod-dsa=y
-CONFIG_PACKAGE_kmod-dsa-tag-dsa=y
-CONFIG_PACKAGE_kmod-fuse=y
-CONFIG_PACKAGE_kmod-tun=y
+# Extra Storage & Networking Features
+CONFIG_PACKAGE_luci-app-samba4=y
+CONFIG_PACKAGE_luci-app-ttyd=y
+CONFIG_PACKAGE_luci-app-zerotier=y
 CONFIG_PACKAGE_kmod-wireguard=y
-CONFIG_PACKAGE_kmod-mtd-rw=y
-
-# USB 3.0 support (RE-CS-07 has USB 3.0 port)
-CONFIG_PACKAGE_kmod-usb-core=y
-CONFIG_PACKAGE_kmod-usb2=y
-CONFIG_PACKAGE_kmod-usb3=y                      # xHCI for USB 3.0
-CONFIG_PACKAGE_kmod-usb-storage=y
-CONFIG_PACKAGE_kmod-usb-storage-extras=y
-CONFIG_PACKAGE_kmod-usb-storage-uas=y           # Faster USB SSD/HDD
-CONFIG_PACKAGE_kmod-usb-net=y
-CONFIG_PACKAGE_kmod-usb-net-rtl8152=y           # Common USB Ethernet
-CONFIG_PACKAGE_kmod-usb-net-qmi-wwan=y          # USB modems (failover WAN)
-
-# nftables acceleration (fullcone, tproxy, offload)
-CONFIG_PACKAGE_kmod-nft-core=y
-CONFIG_PACKAGE_kmod-nft-fib=y
-CONFIG_PACKAGE_kmod-nft-fullcone=y
-CONFIG_PACKAGE_kmod-nft-nat=y
-CONFIG_PACKAGE_kmod-nft-offload=y
-CONFIG_PACKAGE_kmod-nft-socket=y
-CONFIG_PACKAGE_kmod-nft-tproxy=y
-
-## System utilities
-CONFIG_PACKAGE_autocore=y
-CONFIG_PACKAGE_automount=y
-CONFIG_PACKAGE_bash=y
-CONFIG_PACKAGE_blkid=y
-CONFIG_PACKAGE_cfdisk=y
-CONFIG_PACKAGE_cgdisk=y
-CONFIG_PACKAGE_coremark=y
-CONFIG_PACKAGE_cpufreq=y
-CONFIG_PACKAGE_fdisk=y
-CONFIG_PACKAGE_gdisk=y
-CONFIG_PACKAGE_lsblk=y
-CONFIG_PACKAGE_sfdisk=y
-CONFIG_PACKAGE_sgdisk=y
-CONFIG_PACKAGE_ip-full=y
-CONFIG_PACKAGE_luci-base=y
-CONFIG_PACKAGE_luci-compat=y
-CONFIG_PACKAGE_luci-lib-base=y
-CONFIG_PACKAGE_luci-lib-ipkg=y
-CONFIG_PACKAGE_luci-lua-runtime=y
-CONFIG_PACKAGE_luci-proto-bonding=y
-CONFIG_PACKAGE_luci-proto-relay=y
-
-## Disabled / Redundant
-CONFIG_PACKAGE_kmod-phy-aquantia=n
-CONFIG_PACKAGE_kmod-usb-dwc3=n
-CONFIG_PACKAGE_kmod-usb-dwc3-qcom=n
-CONFIG_PACKAGE_kmod-usb-xhci-hcd=n             # Already covered by kmod-usb3
-CONFIG_PACKAGE_luci-app-attendedsysupgrade=n
-CONFIG_PACKAGE_attendedsysupgrade-common=n
-
-## Disable unnecessary debugging
-CONFIG_ATH11K_DEBUGFS_HTT_STATS=n
-CONFIG_ATH11K_DEBUGFS_STA=n
-CONFIG_ATH11K_THERMAL=n
-
-## No extra custom feeds
-CONFIG_FEED_nss=n
-CONFIG_FEED_sqm_scripts_nss=n
