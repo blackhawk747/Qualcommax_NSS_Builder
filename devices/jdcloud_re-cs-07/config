@@ -11,7 +11,23 @@ CONFIG_TARGET_DEVICE_qualcommax_ipq60xx_DEVICE_jdcloud_re-cs-07=y
 CONFIG_PACKAGE_dnsmasq=n
 CONFIG_PACKAGE_dnsmasq-full=y
 
+## Disable Ath10k (not needed)
+CONFIG_ATH10K-CT_LEDS=n
+CONFIG_PACKAGE_ath10k-board-qca9887=n
+CONFIG_PACKAGE_ath10k-firmware-qca9887=n
+CONFIG_PACKAGE_ath10k-firmware-qca9887-ct=n
+CONFIG_PACKAGE_kmod-ath10k-ct-smallbuffers=n
+
+## Wi-Fi completely disabled (no driver, no firmware, no wpad/hostapd)
+CONFIG_PACKAGE_kmod-ath11k=n
+CONFIG_PACKAGE_kmod-ath11k-ahb=n
+CONFIG_PACKAGE_kmod-ath11k-pci=n
+CONFIG_PACKAGE_ath11k-firmware-ipq6018=n
+CONFIG_PACKAGE_ath11k-firmware-qcn9074=n
+CONFIG_PACKAGE_wpad-openssl=n
+CONFIG_PACKAGE_wpad-basic-mbedtls=n
+CONFIG_PACKAGE_hostapd-common=n
+
 # Extra Storage & Networking Features
 CONFIG_PACKAGE_luci-app-samba4=y
 CONFIG_PACKAGE_luci-app-ttyd=y
-CONFIG_PACKAGE_kmod-wireguard=y
